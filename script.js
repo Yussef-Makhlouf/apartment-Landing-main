@@ -180,6 +180,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     lazyImages.forEach(img => imageObserver.observe(img));
+
+    // Initialize mobile menu
+    initMobileMenu();
 });
 
 // Scroll to top function
@@ -190,10 +193,48 @@ function scrollToTop() {
     });
 }
 
-// Mobile menu toggle (if needed in future)
-function toggleMobileMenu() {
+// Mobile menu functionality
+function initMobileMenu() {
+    const mobileToggle = document.querySelector('.mobile-menu-toggle');
     const nav = document.querySelector('.nav');
-    nav.classList.toggle('active');
+    const overlay = document.querySelector('.mobile-menu-overlay');
+    const navLinks = document.querySelectorAll('.nav a');
+
+    function toggleMobileMenu() {
+        mobileToggle.classList.toggle('active');
+        nav.classList.toggle('active');
+        overlay.classList.toggle('active');
+        document.body.style.overflow = nav.classList.contains('active') ? 'hidden' : '';
+    }
+
+    // Toggle menu on hamburger click
+    mobileToggle.addEventListener('click', toggleMobileMenu);
+
+    // Close menu on overlay click
+    overlay.addEventListener('click', toggleMobileMenu);
+
+    // Close menu when clicking on a nav link
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            if (nav.classList.contains('active')) {
+                toggleMobileMenu();
+            }
+        });
+    });
+
+    // Close menu on escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && nav.classList.contains('active')) {
+            toggleMobileMenu();
+        }
+    });
+
+    // Close menu on window resize (if screen becomes larger)
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 768 && nav.classList.contains('active')) {
+            toggleMobileMenu();
+        }
+    });
 }
 
 // Copy phone number to clipboard
